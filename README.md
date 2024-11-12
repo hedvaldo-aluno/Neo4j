@@ -19,7 +19,16 @@ Mesmo sendo um bando de dados robusto e prático, o Neo4j possui a problemática
 
 ## COMO USAR?
 
-Ao entrar no Neo4j Desktop, criamos um novo projeto e iniciamos um banco de dados gráfico. Com o banco criado, damos start no projeto e abrimos o Neo4j browser para utilizar o cypher. (Cypher é a linguagem de consulta do Neo4j. É semelhante ao SQL, mas voltada para grafos.)
+Ao entrar no Neo4j Desktop, criamos um novo projeto
+![image](https://github.com/user-attachments/assets/56642bc6-34be-4729-bf6b-8180bf3fbee1)
+
+iniciamos um banco de dados gráfico e criamos a senha
+![image](https://github.com/user-attachments/assets/934274ed-86a7-4ef9-a156-ea950e5306f8)
+
+Com o banco criado, damos start no projeto e abrimos o Neo4j browser para utilizar o cypher. (Cypher é a linguagem de consulta do Neo4j. É semelhante ao SQL, mas voltada para grafos.)
+![image](https://github.com/user-attachments/assets/0c422ea5-573b-4a14-acb1-c02087dc815e)
+
+
 
 ### CRIANDO NÓS
 
@@ -32,7 +41,7 @@ CREATE (a:Person {name: "Alice", age: 30})
 ```cypher
 // a: Pet -> Nó com rótulo Pet
 // {name: "Hulk", age: 3, race: "bulldog"} criação de três entidades
-CREATE (a: Pet {name: "Hulk", age: 3, race: "bulldog"}
+CREATE (a: Pet {name: "Hulk", age: 3, race: "bulldog"})
 ```
 
 ### RETORNANDO NÓS
@@ -42,12 +51,15 @@ CREATE (a: Pet {name: "Hulk", age: 3, race: "bulldog"}
 MATCH (p:Person {name: "Alice"})
 RETURN p
 ```
+![image](https://github.com/user-attachments/assets/96bc8101-ed0b-4c10-baf7-45dbd6ec07bb)
+
 
 ```cypher
 // Irá retornar todos os nós com o rótulo Person
 MATCH (p:Person) 
 RETURN p
 ```
+![image](https://github.com/user-attachments/assets/407939a1-e78b-4bae-a9e2-72525b11c41a)
 
 ### CRIANDO RELACIONAMENTOS
 
@@ -57,6 +69,8 @@ RETURN p
 MATCH (a:Person {name: "Alice"}), (b:Person {name: "Bob"})
 CREATE (a)-[:KNOWS]->(b)
 ```
+![image](https://github.com/user-attachments/assets/2807354f-926d-4178-aaad-4e0742f50e92)
+
 
 ```cypher
 // Cria um relacionamento com a propriedade since
