@@ -144,3 +144,83 @@ REMOVE p.city
 MATCH (p:Person {name: "Alice"}) 
 REMOVE p:Person
 ```
+
+### VISUALIZANDO O ESQUEMA DO BANCO DE DADOS
+
+**Observação: Estou utilizando o conjunto de dados carregado do próprio Neo4j, o banco de recomendações de filmes**
+
+```cypher
+// Função para visualizar a estrutura dos tipos de nós e os relacionamentos existentes entre eles.
+CALL db.schema.visualization
+```
+
+### CLÁUSULA WITH
+
+```cypher
+// Aqui, o WITH passa a pessoa (p) e a contagem de livros lidos (booksRead) para a próxima etapa.
+MATCH (p:Person)-[:HAS_READ]->(b:Book)
+WITH p, count(b) AS booksRead
+WHERE booksRead > 3
+RETURN p.name, booksRead
+```
+
+```cypher
+// Agrupa os livros pelo título (b.title) e conta o número de pessoas que os leram (readers).
+MATCH (p:Person)-[:HAS_READ]->(b:Book)
+WITH b.title AS book, count(p) AS readers
+RETURN book, readers
+```
+
+```cypher
+// Aqui, a contagem de amigos é usada para filtrar pessoas antes de buscar os livros lidos.
+MATCH (p:Person)-[:IS_FRIENDS_WITH]->(f:Person)
+WITH p, count(f) AS friendsCount
+WHERE friendsCount > 5
+MATCH (p)-[:HAS_READ]->(b:Book)
+RETURN p.name, b.title
+```
+
+```cypher
+// Pode ser combinado com DISTINCT para remover duplicatas em uma etapa intermediária.
+MATCH (p:Person)-[:IS_FRIENDS_WITH]->(f:Person)
+WITH DISTINCT p
+MATCH (p)-[:HAS_READ]->(b:Book)
+RETURN p.name, b.title
+```
+
+```cypher
+// Ordenar ou limitar os dados antes de passá-los adiante
+MATCH (p:Person)-[:HAS_READ]->(b:Book)
+WITH p, count(b) AS booksRead
+ORDER BY booksRead DESC
+LIMIT 10
+RETURN p.name, booksRead
+```
+
+```cypher
+// Encontra o nó do tipo Actor com o nome "Eric Campbell" e os filmes (m:Movie) nos quais ele atuou, por meio do relacionamento [:ACTED_IN]
+MATCH (a:Actor {name: "Eric Campbell"})-[:ACTED_IN]->(m:Movie)
+// Passa os filmes (m) encontrados na etapa anterior para a próxima parte da consulta e as variáveis que não são explicitamente listadas no WITH são descartadas
+WITH m
+// Para cada filme (m) encontrado na etapa anterior, busca todos os nós do tipo User (node2) que têm qualquer relacionamento com o filme, independentemente do tipo ou da profundidade ([*] indica um relacionamento de qualquer tipo e comprimento)
+MATCH (m)<-[*]-(node2:User)
+// Agrupa todos os nós User (node2) encontrados na etapa anterior em uma lista chamada nodes.
+// A função COLLECT é usada para reunir múltiplos valores em uma lista, facilitando o retorno ou processamento conjunto.
+WITH COLLECT(node2) AS nodes
+RETURN nodes
+```
+
+### DETACH DELETE
+
+```cypher
+// Remove o nó e todos os relacionamentos conectados a ele.
+MATCH (n:Label {property: value})
+DETACH DELETE n
+```
+**Observação: Se usado sem critérios específicos, pode excluir uma grande parte do grafo. Após a exclusão, os dados não podem ser recuperados, a menos que exista um backup.**
+
+```cypher
+// Remove todos os nós e relacionamentos
+MATCH (n)
+DETACH DELETE n
+```
